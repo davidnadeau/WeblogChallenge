@@ -37,7 +37,7 @@ class WebLogSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
       .forall(x => x == 1 || x == 10) should be(true)
   }
 
-  "sessionizeData" should "get" in {
+  "sessionizeData" should "create 2 sessions for 1 user, and 1 for the other" in {
     val sessionizedData = getSessionizedData
 
     sessionizedData.count() should be(2)
