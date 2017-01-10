@@ -86,7 +86,7 @@ class WebLogSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
       true)
   }
 
-  "getMostEngagedUsers" should "get return user 123.242.248.130 as the most engaged" in {
+  "getMostEngagedUsers" should "return user 123.242.248.130 as the most engaged" in {
     val sessionizedData = getSessionizedData
     val sessionDurationByIP =
       WebLogChallenge.getSessionDurationByIP(sessionizedData)

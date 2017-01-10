@@ -59,8 +59,9 @@ object WebLogChallenge {
   // (4) most engaged
   def getMostEngagedUsers(
       n: Int,
-      rdd: RDD[(String, List[Long])]): Array[(String, Long)] =
+      rdd: RDD[(String, List[Long])]): Array[(String, Long)] = {
     rdd.mapValues(_.max).sortBy(-_._2).take(n)
+  }
 
   def main(args: Array[String]): Unit = {
     val interval = 15 * 60
@@ -68,20 +69,19 @@ object WebLogChallenge {
     val conf = new SparkConf().setAppName("WebLogChallenge")
     val sc = new SparkContext(conf)
 
-    val file: RDD[String] =
+    val file =
       if (args.nonEmpty) sc.textFile(args(0)) else sc.emptyRDD[String]
 
-    val sessionizedDataByIP: RDD[(String, List[List[LogEvent]])] =
-      sessionizeData(interval, cleanData(file))
-    val sessionsDurationsByIP = getSessionDurationByIP(sessionizedDataByIP)
+    val sessionizedDataByIP = sessionizeData(interval, cleanData(file))
+    val sessionDurationsByIP = getSessionDurationByIP(sessionizedDataByIP)
 
     // 2
     val averageSessionDurationByIP = getAverageSessionDurationByIP(
-      sessionsDurationsByIP)
+      sessionDurationsByIP)
     // 3
     val uniqueLinksByIP = getUniqueLinksByIP(sessionizedDataByIP)
     // 4
-    val mostEngagedIP = getMostEngagedUsers(10, sessionsDurationsByIP)
+    val mostEngagedIP = getMostEngagedUsers(10, sessionDurationsByIP)
 
     sc.stop()
   }
